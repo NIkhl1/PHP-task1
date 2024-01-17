@@ -1,0 +1,49 @@
+<?php
+
+function calculateDiscount($cart, $products) {
+    // ... (no changes here)
+}
+
+function getProductInfo($product) {
+    echo "Enter the quantity of $product: ";
+    $quantity = trim(fgets(STDIN));
+
+    echo "Is $product wrapped as a gift? (yes/no): ";
+    $isGift = trim(fgets(STDIN));
+
+    $giftWrapFee = strtolower($isGift) === 'yes' ? 1 : 0;
+
+    return ['product' => $product, 'quantity' => (int)$quantity, 'giftWrapFee' => $giftWrapFee];
+}
+
+function displayDetails($cart) {
+    list($subtotal, $discountName, $discountAmount) = calculateDiscount($cart);
+    $shippingFee = floor(array_sum(array_column($cart, 'quantity')) / 10) * 5;
+    $total = $subtotal + $shippingFee + array_sum(array_column($cart, 'giftWrapFee'));
+
+    // Display the details
+    foreach ($cart as $item) {
+        echo "{$item['product']} - Quantity: {$item['quantity']} - Total: ${$item['quantity'] * $item['price']}\n";
+    }
+
+    echo "\nSubtotal: $$subtotal\n";
+    echo "Discount applied ($discountName): $$discountAmount\n";
+    echo "Shipping fee: $$shippingFee\n";
+    echo "Gift wrap fee: $", array_sum(array_column($cart, 'giftWrapFee')), "\n";
+    echo "\nTotal: $$total\n";
+}
+
+$products = [
+    "Product A" => 20,
+    "Product B" => 40,
+    "Product C" => 50
+];
+
+$cart = [];
+
+foreach ($products as $product => $price) {
+    $cart[] = getProductInfo($product);
+}
+
+displayDetails($cart);
+?>
